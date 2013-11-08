@@ -8,7 +8,7 @@ Travail à réaliser en binôme.
 
 ## sujet
 
-On travail dans un rectangle, avec des obstacle, un point de départ, et un point d'arrivée
+On travail dans un rectangle, avec des obstacles, un point de départ, et un point d'arrivé
 
 ### 1 ère partie:
 
@@ -22,6 +22,7 @@ Appliquer l'algo du plus court chemin, avec Dijsktra
 
 ### 3 ième partie
 
-Optimiser le graph en ne prenant en compte que les cotés des "formes" et par conséquent réduire de manière drastique le nombre de sommets.
+Optimiser le graph en ne prenant en compte que les cotés des "formes" et par conséquent réduire de manière drastique le 
+nombre de sommets.
 
 
