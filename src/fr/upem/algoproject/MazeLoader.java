@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -22,7 +21,6 @@ public class MazeLoader {
 
 	private static List<Rectangle> getObstacles(Node obstacles) {
 		ArrayList<Rectangle> l = new ArrayList<>();
-		System.out.println(obstacles);
 		NodeList obs = ((Element) obstacles).getElementsByTagName("obstacle");
 		for (int i = 0; i < obs.getLength(); ++i) {
 			Node n = obs.item(i);
@@ -68,14 +66,35 @@ public class MazeLoader {
 		Point end = new Point(Integer.parseInt(endAttributes.getNamedItem("x")
 				.getTextContent()), Integer.parseInt(endAttributes
 				.getNamedItem("y").getTextContent()));
+		Graph g = new ListGraph(width * height);
 
-		ArrayMaze maze = new ArrayMaze(height, l, start, end);
-		System.out.println("resulting Maze: " + maze);
-
+		for(int i=0; i < height; ++i) { // h
+			for(int j=0; j < width; ++j) { // h * w
+				Point point = new Point(j, i);
+				if(!Rectangles.contains(l, point)) { // h*w * obstacles
+					fr.upem.algoproject.Node n1 = new fr.upem.algoproject.Node(point);
+					for (int dx = -1; dx <= 1; ++dx) { // h*w*obstacles *3
+						for (int dy = -1; dy <= 1; ++dy) { // h*w*obstacles*3 * 3
+							if (j + dx > 0 && j + dx < width && i + dy > 0
+									&& i + dy < height) {
+								if (!Rectangles.contains(l, i + dx, j + dy)) { // h*w*obstacles*3*3 * obstacles
+									Point p2 = new Point(i + dx, j + dy);
+									fr.upem.algoproject.Node n2 = new fr.upem.algoproject.Node(p2);
+									if(p2.equals(end))
+										n2.isEnd(true);
+									g.addPath(n1, n2);
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		System.out.println("resulting g: " + g);
 		System.out.println(start);
 		System.out.println(end);
-
-		return MazeFactory.fromArrayMaze(maze);
+		return new GraphMaze(g, start, end);
 	}
 
 	public static void main(String[] args) {

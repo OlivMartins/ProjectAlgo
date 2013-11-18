@@ -30,4 +30,13 @@ public class ListGraph implements Graph {
 		return array.length;
 	}
 
+	@Override
+	public List<Node> getNodeList() {
+		ArrayList<Node> allNodes = new ArrayList<>(nodeCount());
+		for(int i=0; i < nodeCount() ; ++i) {
+			allNodes.addAll(array[i]);
+		}
+		return allNodes;
+	}
+
 }

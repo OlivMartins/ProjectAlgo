@@ -22,9 +22,9 @@ class Node {
 			return false;
 		}
 		Node other = (Node) obj;
-//		if (end != other.end) {
-//			return false;
-//		}
+		if (end != other.end) {
+			return false;
+		}
 		if (x != other.x) {
 			return false;
 		}
