@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Scanner;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -57,32 +59,34 @@ public class MazeLoader {
 		NamedNodeMap startAttributes = ((Element) points)
 				.getElementsByTagName("start").item(0).getAttributes();
 
-		Point start = new Point(Integer.parseInt(startAttributes.getNamedItem(
+		Point startpoint = new Point(Integer.parseInt(startAttributes.getNamedItem(
 				"x").getTextContent()), Integer.parseInt(startAttributes
 				.getNamedItem("y").getTextContent()));
 		NamedNodeMap endAttributes = ((Element) points)
 				.getElementsByTagName("end").item(0).getAttributes();
+		int start = startpoint.y * width + startpoint.x;
 
-		Point end = new Point(Integer.parseInt(endAttributes.getNamedItem("x")
+		Point endpoint = new Point(Integer.parseInt(endAttributes.getNamedItem("x")
 				.getTextContent()), Integer.parseInt(endAttributes
 				.getNamedItem("y").getTextContent()));
 		Graph g = new ListGraph(width * height);
 
+		int end = endpoint.y * width + endpoint.x;
+		System.out.println("Before loop: " + System.nanoTime());
 		for(int i=0; i < height; ++i) { // h
 			for(int j=0; j < width; ++j) { // h * w
-				Point point = new Point(j, i);
-				if(!Rectangles.contains(l, point)) { // h*w * obstacles
-					fr.upem.algoproject.Node n1 = new fr.upem.algoproject.Node(point);
+				int curr_point = j * width + i;
+				if(!Rectangles.contains(l, j, i)) { // h*w * obstacles
 					for (int dx = -1; dx <= 1; ++dx) { // h*w*obstacles *3
 						for (int dy = -1; dy <= 1; ++dy) { // h*w*obstacles*3 * 3
-							if (j + dx > 0 && j + dx < width && i + dy > 0
-									&& i + dy < height) {
+							if (j + dy > 0 && j + dy < width && i + dx > 0
+									&& i + dx < height) {
 								if (!Rectangles.contains(l, i + dx, j + dy)) { // h*w*obstacles*3*3 * obstacles
-									Point p2 = new Point(i + dx, j + dy);
-									fr.upem.algoproject.Node n2 = new fr.upem.algoproject.Node(p2);
-									if(p2.equals(end))
-										n2.isEnd(true);
-									g.addPath(n1, n2);
+									if((j+dy) * width + i+dx < 0) {
+										System.out.println("We had a problem:" + (j+dy) * width + i+dx + " is negative");
+										System.out.println("i: " + i + " j:" + j +" dx:" + dx + " dy:" + dy);
+									}
+									g.addPath(curr_point, (j+dy) * width + i+dx);
 								}
 							}
 						}
@@ -90,16 +94,27 @@ public class MazeLoader {
 				}
 			}
 		}
-		
-		System.out.println("resulting g: " + g);
-		System.out.println(start);
-		System.out.println(end);
-		return new GraphMaze(g, start, end);
+
+		System.out.println("After loop:" + System.nanoTime());
+		System.out.println("Attempting Dijkstra..");
+		int previous[] = DijkstraWalker.walk(g, start, end);
+		System.out.println("Finished Dijkstra");
+		System.out.println(previous);
+		int u = end;
+		System.out.println(u);
+		while(previous[u] != -1) {
+			u = previous[u];
+			System.out.println(u);
+		}
+		return new Maze(startpoint, endpoint, g, width, height);
 	}
 
 	public static void main(String[] args) {
 		try {
+			
+			System.out.println(System.nanoTime());
 			Maze m = loadMazeFromFile(Paths.get("test1.xml"));
+			System.out.println(System.nanoTime());
 		} catch (SAXException | IOException | ParserConfigurationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

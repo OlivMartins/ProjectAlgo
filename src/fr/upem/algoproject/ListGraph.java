@@ -4,25 +4,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ListGraph implements Graph {
-
-	private final List<Node> array[];
-
+	
+	private final List<Integer> array[];
+	
 	public ListGraph(int nNodes) {
-		array = new List[nNodes];
-		for (int i = 0; i < nNodes; ++i) {
-			array[i] = new ArrayList<Node>(nNodes);
+		this.array = new ArrayList[nNodes];
+		for(int i=0; i < nNodes; ++i) {
+			array[i] = new ArrayList<>();
 		}
 	}
 
 	@Override
-	public void addPath(Node n1, Node n2) {
-		if (!hasPath(n1, n2))
-			array[n1.hashCode() % array.length].add(n2);
+	public boolean hasPath(int node1, int node2) {
+		return array[node1].contains(node2);
 	}
 
 	@Override
-	public boolean hasPath(Node node1, Node node2) {
-		return array[node1.hashCode() % array.length].contains(node2);
+	public void addPath(int node1, int node2) {
+		array[node1].add(node2);
 	}
 
 	@Override
@@ -31,12 +30,19 @@ public class ListGraph implements Graph {
 	}
 
 	@Override
-	public List<Node> getNodeList() {
-		ArrayList<Node> allNodes = new ArrayList<>(nodeCount());
-		for(int i=0; i < nodeCount() ; ++i) {
-			allNodes.addAll(array[i]);
+	public List<Integer> getNeighbours(int n) {
+		List<Integer> l = new ArrayList<>();
+		l.addAll(this.array[n]);
+		return l;
+	}
+
+	@Override
+	public List<Integer> getAllNodes() {
+		List<Integer> l = new ArrayList<>();
+		for(int i=0; i < array.length; ++i) {
+			l.add(i);
 		}
-		return allNodes;
+		return l;
 	}
 
 }
