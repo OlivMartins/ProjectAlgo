@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xml>
+  <rectangle>
+    <dimension height="21" width="21"/>
+    <obstacles>
+      <obstacle bottomrightx="4" bottomrighty="2" topleftx="2" toplefty="2"/>
+      <obstacle bottomrightx="10" bottomrighty="2" topleftx="6" toplefty="2"/>
+      <obstacle bottomrightx="16" bottomrighty="2" topleftx="12" toplefty="2"/>
+      <obstacle bottomrightx="6" bottomrighty="4" topleftx="4" toplefty="4"/>
+      <obstacle bottomrightx="14" bottomrighty="4" topleftx="10" toplefty="4"/>
+      <obstacle bottomrightx="19" bottomrighty="4" topleftx="18" toplefty="4"/>
+      <obstacle bottomrightx="6" bottomrighty="6" topleftx="2" toplefty="6"/>
+      <obstacle bottomrightx="10" bottomrighty="6" topleftx="8" toplefty="6"/>
+      <obstacle bottomrightx="4" bottomrighty="8" topleftx="1" toplefty="8"/>
+      <obstacle bottomrightx="10" bottomrighty="8" topleftx="8" toplefty="8"/>
+      <obstacle bottomrightx="14" bottomrighty="8" topleftx="12" toplefty="8"/>
+      <obstacle bottomrightx="19" bottomrighty="8" topleftx="16" toplefty="8"/>
+      <obstacle bottomrightx="16" bottomrighty="10" topleftx="4" toplefty="10"/>
+      <obstacle bottomrightx="19" bottomrighty="10" topleftx="18" toplefty="10"/>
+      <obstacle bottomrightx="10" bottomrighty="12" topleftx="2" toplefty="12"/>
+      <obstacle bottomrightx="18" bottomrighty="12" topleftx="16" toplefty="12"/>
+      <obstacle bottomrightx="12" bottomrighty="14" topleftx="4" toplefty="14"/>
+      <obstacle bottomrightx="19" bottomrighty="14" topleftx="18" toplefty="14"/>
+      <obstacle bottomrightx="10" bottomrighty="16" topleftx="8" toplefty="16"/>
+      <obstacle bottomrightx="16" bottomrighty="16" topleftx="14" toplefty="16"/>
+      <obstacle bottomrightx="19" bottomrighty="16" topleftx="18" toplefty="16"/>
+      <obstacle bottomrightx="12" bottomrighty="18" topleftx="10" toplefty="18"/>
+      <obstacle bottomrightx="18" bottomrighty="18" topleftx="14" toplefty="18"/>
+      <obstacle bottomrightx="2" bottomrighty="6" topleftx="2" toplefty="4"/>
+      <obstacle bottomrightx="2" bottomrighty="14" topleftx="2" toplefty="10"/>
+      <obstacle bottomrightx="2" bottomrighty="19" topleftx="2" toplefty="16"/>
+      <obstacle bottomrightx="4" bottomrighty="2" topleftx="4" toplefty="1"/>
+      <obstacle bottomrightx="4" bottomrighty="8" topleftx="4" toplefty="6"/>
+      <obstacle bottomrightx="4" bottomrighty="16" topleftx="4" toplefty="14"/>
+      <obstacle bottomrightx="4" bottomrighty="19" topleftx="4" toplefty="18"/>
+      <obstacle bottomrightx="6" bottomrighty="4" topleftx="6" toplefty="2"/>
+      <obstacle bottomrightx="6" bottomrighty="10" topleftx="6" toplefty="6"/>
+      <obstacle bottomrightx="6" bottomrighty="19" topleftx="6" toplefty="14"/>
+      <obstacle bottomrightx="8" bottomrighty="2" topleftx="8" toplefty="1"/>
+      <obstacle bottomrightx="8" bottomrighty="8" topleftx="8" toplefty="4"/>
+      <obstacle bottomrightx="8" bottomrighty="12" topleftx="8" toplefty="10"/>
+      <obstacle bottomrightx="8" bottomrighty="18" topleftx="8" toplefty="14"/>
+      <obstacle bottomrightx="10" bottomrighty="6" topleftx="10" toplefty="4"/>
+      <obstacle bottomrightx="12" bottomrighty="6" topleftx="12" toplefty="4"/>
+      <obstacle bottomrightx="12" bottomrighty="10" topleftx="12" toplefty="8"/>
+      <obstacle bottomrightx="12" bottomrighty="16" topleftx="12" toplefty="12"/>
+      <obstacle bottomrightx="12" bottomrighty="19" topleftx="12" toplefty="18"/>
+      <obstacle bottomrightx="14" bottomrighty="4" topleftx="14" toplefty="2"/>
+      <obstacle bottomrightx="14" bottomrighty="8" topleftx="14" toplefty="6"/>
+      <obstacle bottomrightx="14" bottomrighty="18" topleftx="14" toplefty="10"/>
+      <obstacle bottomrightx="16" bottomrighty="4" topleftx="16" toplefty="1"/>
+      <obstacle bottomrightx="16" bottomrighty="8" topleftx="16" toplefty="6"/>
+      <obstacle bottomrightx="16" bottomrighty="16" topleftx="16" toplefty="14"/>
+      <obstacle bottomrightx="18" bottomrighty="2" topleftx="18" toplefty="1"/>
+      <obstacle bottomrightx="18" bottomrighty="8" topleftx="18" toplefty="6"/>
+      <obstacle bottomrightx="18" bottomrighty="12" topleftx="18" toplefty="10"/>
+      <obstacle bottomrightx="0" bottomrighty="20" topleftx="0" toplefty="2"/>
+      <obstacle bottomrightx="20" bottomrighty="0" topleftx="0" toplefty="0"/>
+      <obstacle bottomrightx="20" bottomrighty="20" topleftx="0" toplefty="20"/>
+      <obstacle bottomrightx="20" bottomrighty="18" topleftx="20" toplefty="0"/>
+    </obstacles>
+  </rectangle>
+  <points>
+    <start x="0" y="1"/>
+    <end x="20" y="19"/>
+  </points>
+</xml>

@@ -9,4 +9,5 @@ public interface Graph {
 	public List<Integer> getNeighbours(int n);
 	public List<Integer> getAllNodes();
 	
+	
 }

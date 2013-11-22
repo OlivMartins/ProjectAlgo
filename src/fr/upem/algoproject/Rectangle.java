@@ -8,4 +8,11 @@ public class Rectangle {
 		this.bottomright = bottomright;
 	}
 
+	@Override
+	public String toString() {
+		return "Rectangle [topleft=" + topleft + ", bottomright=" + bottomright
+				+ "]";
+	}
+	
+
 }

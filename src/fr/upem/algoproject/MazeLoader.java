@@ -6,6 +6,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -32,8 +33,9 @@ public class MazeLoader {
 					Integer.parseInt(attributes.getNamedItem("bottomrighty")
 							.getTextContent())), new Point(
 					Integer.parseInt(attributes.getNamedItem("topleftx")
-							.getTextContent()), Integer.parseInt(attributes
-							.getNamedItem("toplefty").getTextContent())));
+							.getTextContent())-1, Integer.parseInt(attributes
+							.getNamedItem("toplefty").getTextContent())-1));
+			System.out.println("Found " + r);
 			l.add(r);
 		}
 		return l;
@@ -59,34 +61,36 @@ public class MazeLoader {
 		NamedNodeMap startAttributes = ((Element) points)
 				.getElementsByTagName("start").item(0).getAttributes();
 
-		Point startpoint = new Point(Integer.parseInt(startAttributes.getNamedItem(
-				"x").getTextContent()), Integer.parseInt(startAttributes
-				.getNamedItem("y").getTextContent()));
+		Point startpoint = new Point(Integer.parseInt(startAttributes
+				.getNamedItem("x").getTextContent()),
+				Integer.parseInt(startAttributes.getNamedItem("y")
+						.getTextContent()));
 		NamedNodeMap endAttributes = ((Element) points)
 				.getElementsByTagName("end").item(0).getAttributes();
 		int start = startpoint.y * width + startpoint.x;
 
-		Point endpoint = new Point(Integer.parseInt(endAttributes.getNamedItem("x")
-				.getTextContent()), Integer.parseInt(endAttributes
+		Point endpoint = new Point(Integer.parseInt(endAttributes.getNamedItem(
+				"x").getTextContent()), Integer.parseInt(endAttributes
 				.getNamedItem("y").getTextContent()));
 		Graph g = new ListGraph(width * height);
 
 		int end = endpoint.y * width + endpoint.x;
 		System.out.println("Before loop: " + System.nanoTime());
-		for(int i=0; i < height; ++i) { // h
-			for(int j=0; j < width; ++j) { // h * w
+		for (int i = 0; i < height; ++i) { // h
+			for (int j = 0; j < width; ++j) { // h * w
 				int curr_point = j * width + i;
-				if(!Rectangles.contains(l, j, i)) { // h*w * obstacles
+				if (!Rectangles.contains(l, j, i)) { // h*w * obstacles
+					System.out.println(l + " " + (i) + " " + (j));
 					for (int dx = -1; dx <= 1; ++dx) { // h*w*obstacles *3
-						for (int dy = -1; dy <= 1; ++dy) { // h*w*obstacles*3 * 3
+						for (int dy = -1; dy <= 1; ++dy) { // h*w*obstacles*3 *
+															// 3
 							if (j + dy > 0 && j + dy < width && i + dx > 0
 									&& i + dx < height) {
-								if (!Rectangles.contains(l, i + dx, j + dy)) { // h*w*obstacles*3*3 * obstacles
-									if((j+dy) * width + i+dx < 0) {
-										System.out.println("We had a problem:" + (j+dy) * width + i+dx + " is negative");
-										System.out.println("i: " + i + " j:" + j +" dx:" + dx + " dy:" + dy);
-									}
-									g.addPath(curr_point, (j+dy) * width + i+dx);
+								if (!Rectangles.contains(l, i + dx, j + dy)) { // h*w*obstacles*3*3
+																				// *
+																				// obstacles
+									g.addPath(curr_point, (j + dy) * width + i
+											+ dx); //9hw(obstacles)²
 								}
 							}
 						}
@@ -97,23 +101,32 @@ public class MazeLoader {
 
 		System.out.println("After loop:" + System.nanoTime());
 		System.out.println("Attempting Dijkstra..");
-		int previous[] = DijkstraWalker.walk(g, start, end);
+		int previous[] = new int[g.nodeCount()];
+		try {
+			previous = DijkstraWalker.walk(g, start, end);
+		} catch (NoSuchElementException e) {
+			e.printStackTrace();
+			previous[end] = -1;
+		}
 		System.out.println("Finished Dijkstra");
-		System.out.println(previous);
 		int u = end;
 		System.out.println(u);
-		while(previous[u] != -1) {
+		while (previous[u] != -1) {
 			u = previous[u];
 			System.out.println(u);
 		}
-		return new Maze(startpoint, endpoint, g, width, height);
+		Maze m = new Maze(startpoint, endpoint, (ListGraph) g, width, height);
+		m.setShortestPath(previous);
+		return m;
 	}
 
 	public static void main(String[] args) {
 		try {
-			
+
 			System.out.println(System.nanoTime());
 			Maze m = loadMazeFromFile(Paths.get("test1.xml"));
+			System.out.println(m.getGraph());
+			MazeExport.saveToPng(m, Paths.get("hello.png"));
 			System.out.println(System.nanoTime());
 		} catch (SAXException | IOException | ParserConfigurationException e) {
 			// TODO Auto-generated catch block

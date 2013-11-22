@@ -4,10 +4,19 @@ public class Maze {
 
 	private final Point start;
 	private final Point end;
-	private final Graph g;
+	private final ListGraph g;
 	private final int width, height;
+	private int[] shortestPath;
 
-	public Maze(Point start, Point end, Graph g, int width, int height) {
+	public int[] getShortestPath() {
+		return shortestPath;
+	}
+
+	public void setShortestPath(int[] shortestPath) {
+		this.shortestPath = shortestPath;
+	}
+
+	public Maze(Point start, Point end, ListGraph g, int width, int height) {
 		this.start = start;
 		this.end = end;
 		this.g = g;
@@ -23,7 +32,7 @@ public class Maze {
 		return end;
 	}
 
-	public Graph getGraph() {
+	public ListGraph getGraph() {
 		return g;
 	}
 

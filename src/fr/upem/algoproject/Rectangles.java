@@ -7,16 +7,16 @@ public class Rectangles {
 
 	public static boolean contains(Point topleft, Point bottomright, Point p) {
 
-		if ((p.x > topleft.x && p.y > topleft.y)
-				&& (p.x < bottomright.x && p.y < bottomright.y))
+		if ((p.x >= topleft.x && p.y >= topleft.y)
+				&& (p.x <= bottomright.x && p.y <= bottomright.y))
 			return true;
 		return false;
 	}
 
 	public static boolean contains(Point topleft, Point bottomright, int x,
 			int y) {
-		if ((x > topleft.x && y > topleft.y)
-				&& (x < bottomright.x && y < bottomright.y))
+		if ((x >= topleft.x && y >= topleft.y)
+				&& (x <= bottomright.x && y <= bottomright.y))
 			return true;
 		return false;
 	}
