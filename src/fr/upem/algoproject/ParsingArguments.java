@@ -10,6 +10,7 @@ import org.xml.sax.SAXException;
 
 import fr.upem.algoproject.MazeLoader;
 
+import com.martiansoftware.jsap.FlaggedOption;
 import com.martiansoftware.jsap.JSAP;
 import com.martiansoftware.jsap.JSAPException;
 import com.martiansoftware.jsap.JSAPResult;
@@ -24,67 +25,42 @@ public class ParsingArguments {
 		jsap = new JSAP();
 	}
 
-	private static Switch createSwitch(String name, char c, String longFlag) {
-		return new Switch(name, c, longFlag);
-	}
-
-	private static UnflaggedOption createUnflaggedOption(String name,
-			StringParser typeParser, String defaut, boolean required,
-			boolean greedy) {
-		return new UnflaggedOption(name).setStringParser(typeParser)
-				.setDefault(defaut).setRequired(required).setGreedy(greedy);
-	}
-
-	public void parsing(String[] arguments) {
-		Switch firstSwitch = createSwitch("input", 'c', "input");
-		Switch secondSwitch = createSwitch("output", 'o', "output");
-
-		try {
-
-			jsap.registerParameter(firstSwitch);
-			jsap.registerParameter(secondSwitch);
-			if (arguments.length >= 6) {
-				Switch shortestPath = createSwitch("shortedPath", 'r',
-						"with-shortest-path");
-				jsap.registerParameter(shortestPath);
-				System.out.println("Option shortestPath ok");
-			}
-			UnflaggedOption fileXml = createUnflaggedOption("firstArgument",
-					JSAP.STRING_PARSER, JSAP.NO_DEFAULT, false, JSAP.NOT_GREEDY);
-			jsap.registerParameter(fileXml);
-
-			UnflaggedOption image = createUnflaggedOption("secondArgument",
-					JSAP.STRING_PARSER, JSAP.NO_DEFAULT, false, JSAP.NOT_GREEDY);
-			jsap.registerParameter(image);
-
-			JSAPResult config = jsap.parse(arguments);
-
-			MazeLoader m = new MazeLoader();
-
-			if (config.getString("firstArgument").contains(".png")) {
-				Maze maze = m.loadMazeFromFile(Paths.get(config
-						.getString("secondArgument")));
-				System.out.println("GENERATE IMAGE with the FIRST ARGUMENT");
-			} else {
-				Maze maze = m.loadMazeFromFile(Paths.get(config
-						.getString("firstArgument")));
-				System.out.println("GENERATE IMAGE with the SECOND ARGUMENT");
-			}
+	public void parsing(String[] arguments) throws JSAPException, IOException, ParserConfigurationException, SAXException {
 		
-			System.out.println("Calculer le plus court chemin");
+		JSAP jsap = new JSAP();
 
-		} catch (IOException | ParserConfigurationException | SAXException
-				| JSAPException e) {
+		FlaggedOption input = new FlaggedOption("fileXml")
+				.setStringParser(JSAP.STRING_PARSER).setShortFlag('i')
+				.setRequired(true).setLongFlag(JSAP.NO_LONGFLAG);
+		
+		jsap.registerParameter(input);
 
-			e.printStackTrace();
-		}
+		FlaggedOption output = new FlaggedOption("image")
+				.setStringParser(JSAP.STRING_PARSER).setShortFlag('o')
+				.setRequired(true).setLongFlag(JSAP.NO_LONGFLAG);
+		
+		jsap.registerParameter(output);
+		
+		JSAPResult config = jsap.parse(arguments);
+		
+		MazeLoader m = new MazeLoader();
+		Maze maze = m.loadMazeFromFile(Paths.get(config
+				.getString("fileXml")));
+		
+		System.out.println("Name image : "+config.getString("image"));
+
 
 	}
 
 	public static void main(String[] args) throws JSAPException {
 
 		ParsingArguments pa = new ParsingArguments();
-		pa.parsing(args);
+		try {
+			pa.parsing(args);
+		} catch (IOException | ParserConfigurationException | SAXException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 	}
 
