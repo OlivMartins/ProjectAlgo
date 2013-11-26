@@ -12,6 +12,10 @@ public class Point {
 		this.x = point.x;
 		this.y = point.y;
 	}
+	
+	public static Point fromValue(int value, int width){
+		return new Point(value % width, value / width);
+	}
 
 	@Override
 	public String toString() {

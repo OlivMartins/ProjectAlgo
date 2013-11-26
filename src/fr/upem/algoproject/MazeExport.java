@@ -5,6 +5,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
 
@@ -19,14 +20,18 @@ public class MazeExport {
 	}
 	
 	public static void saveToPng(Maze m, Path to) throws IOException {
+		Logger logger = Logger.getLogger("fr.upem.algoproject");
 	    BufferedImage bi = new BufferedImage(1000, 1000, BufferedImage.TYPE_INT_ARGB);
+	    logger.finest("Filling image with blue...");
 	    for(int i = 0 ; i < 1000 ; i++){
 	       for(int j = 0 ; j < 1000 ; j++){
 	          bi.setRGB(i, j, Color.BLUE.getRGB());
 	       }
 	    }
+	    logger.finest("Trying to paint white over the blue to represent the pathes");
 	    for(Integer i : m.getGraph().getAllNodes()) {
 	    	if(m.getGraph().getNeighbours(i).isEmpty()){
+	    		logger.finer("Found not pathes going out of (" + new Point(i % m.getWidth(), i / m.getWidth()));
 	    		continue;
 	    	}
 	    	int y = i / m.getWidth();
@@ -38,13 +43,17 @@ public class MazeExport {
 	    setTile(bi, Color.RED.getRGB(), 1000, 1000, m.getWidth(), m.getHeight(), m.getEnd().x,  m.getEnd().y);
 		int shortestPath[] = m.getShortestPath();
 		int end = m.getEnd().y * m.getWidth() + m.getEnd().x;
+		int start = m.getStart().y * m.getWidth() + m.getStart().x;
 		int u = end;
 	    while(shortestPath[u] != -1) {
 	    	System.out.println(u);
 	    	setTile(bi, Color.GREEN.getRGB(), 1000, 1000, m.getWidth(), m.getHeight(), u%m.getWidth(), u/m.getWidth());
 			u = shortestPath[u];
+			if(u == start)
+				break;
 		}
 	    File outputfile = to.toFile();
 	    ImageIO.write(bi, "png", outputfile);
+	    logger.info("Done writing to file" + to.toAbsolutePath());
 	}
 }
