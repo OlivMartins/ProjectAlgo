@@ -37,7 +37,6 @@ public class DijkstraWalker {
 				return previous;
 			}
 			visited[u] = true;
-			// System.out.println(g.getNeighbours(u));
 			for (Integer v : g.getNeighbours(u)) {
 				int alt = dist[u] + 1;
 				if (dist[v] < 1 || (alt < dist[v] && !visited[v])) {
@@ -49,6 +48,5 @@ public class DijkstraWalker {
 		}
 		throw new NoSuchElementException(
 				"No path exist between the given start and end");
-		// return previous;
 	}
 }

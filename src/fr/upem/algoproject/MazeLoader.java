@@ -61,7 +61,7 @@ public class MazeLoader {
 				.getTextContent());
 		int width = Integer
 				.parseInt(dim.getNamedItem("width").getTextContent());
-		System.out.println("height: " + height + ", width: " + width);
+		logger.info("height: " + height + ", width: " + width);
 		List<Rectangle> l = getObstacles(((Element) rectangle)
 				.getElementsByTagName("obstacles").item(0));
 		Node points = doc.getElementsByTagName("points").item(0);
@@ -75,80 +75,110 @@ public class MazeLoader {
 		logger.info("Start point: " + startpoint);
 		NamedNodeMap endAttributes = ((Element) points)
 				.getElementsByTagName("end").item(0).getAttributes();
-		int start = startpoint.y * width + startpoint.x;
+		//int start = startpoint.y * width + startpoint.x;
 
 		Point endpoint = new Point(Integer.parseInt(endAttributes.getNamedItem(
 				"x").getTextContent()), Integer.parseInt(endAttributes
 				.getNamedItem("y").getTextContent()));
 		logger.info("End point: " + endpoint);
-		Graph g = new ListGraph(width * height);
+		Graph g = new ListGraph(width * height, l, width);
 
-		int end = endpoint.y * width + endpoint.x;
-		logger.finer("Before loop: " + System.nanoTime());
+		//int end = endpoint.y * width + endpoint.x;
+		logger.finer("Before load loop: " + System.nanoTime());
 		for (int i = 0; i < height; ++i) { // h
 			for (int j = 0; j < width; ++j) { // h * w
 				int curr_point = i * width + j;
-				if (!Rectangles.contains(l, j, i)) { // h*w * obstacles
+//				if (!Rectangles.contains(l, j, i)) { // h*w * obstacles
+					
+//					if(!Rectangles.contains(l, i - 1, j) && i-1>=0)
+//						g.addPath(curr_point, (i-1)*width + j);
+//					if(!Rectangles.contains(l, i, j-1) && j-1>= 0)
+//						g.addPath(curr_point, i*width + j - 1);
+//					if(!Rectangles.contains(l,  i + 1, j) && i+1 < height)
+//						g.addPath(curr_point, (i+1)*width + j);
+//					if(!Rectangles.contains(l,  i, j+1) && j+1 < width)
+//						g.addPath(curr_point, i*width + j + 1);
+//					
 					for (int dx = -1; dx <= 1; ++dx) { // h*w*obstacles *3
-						for (int dy = -1; dy <= 1; ++dy) { // h*w*obstacles*3 * 3
-							if(dx == dy && dy == 0)
-								continue; // we don't want to have loops on ourselves
-							if (j + dx >= 0 && j + dx < width && i + dy >= 0 && i + dy < height) {
-								if (!Rectangles.contains(l, j + dx, i + dy)) { // h*w*obstacles*3*3 * obstacles
-									g.addPath(curr_point, (i + dy) * width + j + dx); //9hw(obstacles)²
-								}
+						for (int dy = -1; dy <= 1; ++dy) { // h*w*obstacles*3 *
+															// 3
+							if (dx == 0 && dy == 0)
+								continue; // we don't want to have loops on
+											// ourselves
+							if (j + dx >= 0 && j + dx < width && i + dy >= 0
+									&& i + dy < height) {
+//								if (!Rectangles.contains(l, j + dx, i + dy)) { // h*w*obstacles*3*3
+																				// *
+																				// obstacles
+									g.addPath(curr_point, (i + dy) * width + j
+											+ dx); // 9hw(obstacles)²...
+//								}
 							}
 						}
 					}
-				}
+//				}
 			}
 		}
 
-		logger.finer("After loop:" + System.nanoTime());
-		logger.fine("Attempting Dijkstra..");
-		int previous[] = new int[g.nodeCount()];
-		try {
-			previous = DijkstraWalker.walk(g, start, end);
-		} catch (NoSuchElementException e) {
-			logger.warning(e.getMessage());
-			previous[end] = -1;
+		logger.finer("After load loop:" + System.nanoTime());
+		if(((ListGraph) g).isEmpty()) {
+			logger.severe("GRAPH IS NULL! PANIC ALERT!");
+			System.exit(666);
 		}
-		logger.fine("Finished Dijkstra");
-		int u = end;
-		Point.fromValue(u, width);
-		while (previous[u] != -1) {
-			StringBuilder sb = new StringBuilder();
-			sb.append(Point.fromValue(u, width) + " -> ");
-			u = previous[u];
-			sb.append(Point.fromValue(u, width));
-			logger.finer("Path : " + sb.toString());
-			if(u == start){
-				break;
-			}
-		}
+		
 		Maze m = new Maze(startpoint, endpoint, (ListGraph) g, width, height);
-		m.setShortestPath(previous);
 		return m;
 	}
 
 	public static void main(String[] args) {
+		Logger l = Logger.getLogger("fr.upem.algoproject");
+		l.setLevel(Level.ALL);
 		try {
-			
-			Logger l = Logger.getLogger("fr.upem.algoproject");
-			l.setLevel(Level.ALL);
 			FileHandler fh = new FileHandler("fr.upem.algoproject.log");
 			fh.setFormatter(new SimpleFormatter());
 			fh.setLevel(Level.FINEST);
 			l.addHandler(fh);
-			System.out.println(System.nanoTime());
-			Maze m = loadMazeFromFile(Paths.get("labygrand1.xml"));
-			System.out.println(m.getGraph());
-			MazeExport.saveToPng(m, Paths.get("hello.png"));
-			System.out.println(System.nanoTime());
-		} catch (SAXException | IOException | ParserConfigurationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (Exception e) {
+			l.severe("Could not open log file: " + e.getMessage());
 		}
+		long prgrmStart = System.currentTimeMillis();
+		l.fine("Programm start: " + prgrmStart);
+		try {
+			long loadStart = System.currentTimeMillis();
+			Maze m = loadMazeFromFile(Paths.get("labygrand1.xml"));
+			long loadEnd = System.currentTimeMillis();
+			l.info("Load phase took " + (loadEnd - loadStart)+ "ms to complete.");
+			
+
+			int width = m.getWidth();
+			Point startPoint = m.getStart();
+			int start = startPoint.y * width + startPoint.x;
+			Point endPoint = m.getEnd();
+			int end = endPoint.y * width + endPoint.x;
+			l.fine("Attempting Dijkstra..");
+			long dijkstraStart = System.currentTimeMillis();
+			int previous[] = new int[m.getGraph().nodeCount()];
+			
+			
+			try {
+				previous = DijkstraWalker.walk(m.getGraph(), start, end);
+			} catch (NoSuchElementException e) {
+				l.warning(e.getMessage());
+				previous[end] = -1;
+			}
+			previous[start] = -1;
+
+			m.setShortestPath(previous);
+			long dijkstraEnd = System.currentTimeMillis();
+			l.info("Phase Dijkstra took " + (dijkstraEnd - dijkstraStart) + "ms to complete.");
+			
+			MazeExport.saveToPng(m, Paths.get("hello.png"));
+		} catch (SAXException | IOException | ParserConfigurationException e) {
+			l.severe("Error  while trying to solve the maze: " + e.getMessage());
+		}
+		
+		long prgrmEnd = System.currentTimeMillis();
+		l.info("Programm took " + (prgrmEnd - prgrmStart) + "ms to complete.");
 	}
 
 }
