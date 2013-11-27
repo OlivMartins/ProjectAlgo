@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Spliterator;
+import java.util.function.Consumer;
 import java.util.logging.Logger;
 
 public class ListGraph implements Graph, Iterable<Integer> {
@@ -119,5 +121,4 @@ public class ListGraph implements Graph, Iterable<Integer> {
 		}
 		return true;
 	}
-
 }

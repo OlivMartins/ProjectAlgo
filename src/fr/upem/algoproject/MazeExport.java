@@ -21,7 +21,8 @@ public class MazeExport {
 		}
 	}
 
-	public static void saveToPng(Maze m, Path to) throws IOException {
+	public static void saveToPng(Maze m, Path to, boolean withShortestPath)
+			throws IOException {
 		Logger logger = Logger.getLogger("fr.upem.algoproject");
 		int width = m.getWidth();
 		int bi_w = Math.max(100, width);
@@ -41,21 +42,23 @@ public class MazeExport {
 			}
 			int y = i / width;
 			int x = i % width;
-			setTile(bi, Color.WHITE.getRGB(), bi_w, bi_h, width,
-					m.getHeight(), x, y);
+			setTile(bi, Color.WHITE.getRGB(), bi_w, bi_h, width, m.getHeight(),
+					x, y);
 		}
-		setTile(bi, Color.RED.getRGB(), bi_w, bi_h, width,
-				m.getHeight(), m.getStart().x, m.getStart().y);
-		setTile(bi, Color.RED.getRGB(), bi_w, bi_h, width,
-				m.getHeight(), m.getEnd().x, m.getEnd().y);
-		int shortestPath[] = m.getShortestPath();
-		int end = m.getEnd().y * width + m.getEnd().x;
-		int start = m.getStart().y * width + m.getStart().x;
-		int u = end;
-		while (shortestPath[u] != -1) {
-			setTile(bi, Color.GREEN.getRGB(), bi_w, bi_h, width,
-					m.getHeight(), u % width, u / width);
-			u = shortestPath[u];
+		setTile(bi, Color.RED.getRGB(), bi_w, bi_h, width, m.getHeight(),
+				m.getStart().x, m.getStart().y);
+		setTile(bi, Color.RED.getRGB(), bi_w, bi_h, width, m.getHeight(),
+				m.getEnd().x, m.getEnd().y);
+		if (withShortestPath) {
+			int shortestPath[] = m.getShortestPath();
+			int end = m.getEnd().y * width + m.getEnd().x;
+			int start = m.getStart().y * width + m.getStart().x;
+			int u = end;
+			while (shortestPath[u] != -1) {
+				setTile(bi, Color.GREEN.getRGB(), bi_w, bi_h, width,
+						m.getHeight(), u % width, u / width);
+				u = shortestPath[u];
+			}
 		}
 		File outputfile = to.toFile();
 		ImageIO.write(bi, "png", outputfile);
