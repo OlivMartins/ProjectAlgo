@@ -2,16 +2,9 @@ package fr.upem.algoproject;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Scanner;
-import java.util.logging.FileHandler;
-import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -75,7 +68,6 @@ public class MazeLoader {
 		logger.info("Start point: " + startpoint);
 		NamedNodeMap endAttributes = ((Element) points)
 				.getElementsByTagName("end").item(0).getAttributes();
-		//int start = startpoint.y * width + startpoint.x;
 
 		Point endpoint = new Point(Integer.parseInt(endAttributes.getNamedItem(
 				"x").getTextContent()), Integer.parseInt(endAttributes
@@ -83,49 +75,31 @@ public class MazeLoader {
 		logger.info("End point: " + endpoint);
 		Graph g = new ListGraph(width * height, l, width);
 
-		//int end = endpoint.y * width + endpoint.x;
 		logger.finer("Before load loop: " + System.nanoTime());
 		for (int i = 0; i < height; ++i) { // h
 			for (int j = 0; j < width; ++j) { // h * w
 				int curr_point = i * width + j;
-//				if (!Rectangles.contains(l, j, i)) { // h*w * obstacles
-					
-//					if(!Rectangles.contains(l, i - 1, j) && i-1>=0)
-//						g.addPath(curr_point, (i-1)*width + j);
-//					if(!Rectangles.contains(l, i, j-1) && j-1>= 0)
-//						g.addPath(curr_point, i*width + j - 1);
-//					if(!Rectangles.contains(l,  i + 1, j) && i+1 < height)
-//						g.addPath(curr_point, (i+1)*width + j);
-//					if(!Rectangles.contains(l,  i, j+1) && j+1 < width)
-//						g.addPath(curr_point, i*width + j + 1);
-//					
-					for (int dx = -1; dx <= 1; ++dx) { // h*w*obstacles *3
-						for (int dy = -1; dy <= 1; ++dy) { // h*w*obstacles*3 *
-															// 3
-							if (dx == 0 && dy == 0)
-								continue; // we don't want to have loops on
-											// ourselves
-							if (j + dx >= 0 && j + dx < width && i + dy >= 0
-									&& i + dy < height) {
-//								if (!Rectangles.contains(l, j + dx, i + dy)) { // h*w*obstacles*3*3
-																				// *
-																				// obstacles
-									g.addPath(curr_point, (i + dy) * width + j
-											+ dx); // 9hw(obstacles)²...
-//								}
-							}
+				for (int dx = -1; dx <= 1; ++dx) { // h*w*obstacles *3
+					for (int dy = -1; dy <= 1; ++dy) { // h*w*obstacles*3 *
+														// 3
+						if (dx == 0 && dy == 0)
+							continue; // we don't want to have loops on
+										// ourselves
+						if (j + dx >= 0 && j + dx < width && i + dy >= 0
+								&& i + dy < height) {
+							g.addPath(curr_point, (i + dy) * width + j + dx);
 						}
 					}
-//				}
+				}
 			}
 		}
 
 		logger.finer("After load loop:" + System.nanoTime());
-		if(((ListGraph) g).isEmpty()) {
+		if (((ListGraph) g).isEmpty()) {
 			logger.severe("GRAPH IS NULL! PANIC ALERT!");
 			System.exit(666);
 		}
-		
+
 		Maze m = new Maze(startpoint, endpoint, (ListGraph) g, width, height);
 		return m;
 	}

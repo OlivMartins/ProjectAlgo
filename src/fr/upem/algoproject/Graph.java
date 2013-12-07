@@ -8,6 +8,4 @@ public interface Graph {
 	public int nodeCount();
 	public List<Integer> getNeighbours(int n);
 	public List<Integer> getAllNodes();
-	
-	
 }
